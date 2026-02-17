@@ -1,0 +1,66 @@
+[project]
+name = "seal"
+version = "0.0.1"
+description = "Vision-omics model for histology and spatial transcriptomics inference"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy==1.24.4",
+    "pandas==2.0.0",
+    "torch==2.1.2",
+    "torchaudio==2.1.2",
+    "torchvision==0.16.2",
+    "torchtext==0.16.2",
+    "timm==1.0.9",
+    "xgboost==2.1.1",
+    "transformers==4.48.0",
+    "albumentations==2.0.5",
+    "accelerate==0.33.0",
+    "matplotlib==3.8.2",
+    "wandb==0.19.9",
+    "tifffile==2023.12.9",
+    "scikit-learn==1.4.0",
+    "conch @ git+https://github.com/Mahmoodlab/CONCH.git",
+    "hest @ git+https://github.com/mahmoodlab/HEST.git@2c777630b1e8a74db6b36ef05582de3bd52ccb61",
+    "scanpy==1.10.3",
+    "scikit-image==0.22.0",
+    "openslide-bin==4.0.0.6",
+    "cudf-cu12==24.8.* ; sys_platform == 'linux'",
+    "cucim-cu12==24.8.* ; sys_platform == 'linux'",
+    "cuml-cu12==24.8.* ; sys_platform == 'linux'",
+    "cupy-cuda12x ; sys_platform == 'linux'",
+    "loguru==0.7.3",
+    "scib==1.1.5",
+    "ipython==8.18.1",
+    "line-profiler==4.2.0",
+    "requests-cache==1.2.1",
+    "pybiomart==0.2.0",
+    "jupyter>=1.1.1",
+    "peft>=0.17.1",
+    "huggingface-hub<1.0.0",
+]
+
+[project.optional-dependencies]
+cross-platform = [
+    "threadpoolctl>=3.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+# Add NVIDIA PyPI index for CUDA packages
+index-url = "https://pypi.org/simple"
+extra-index-url = ["https://pypi.nvidia.com"]
+# Allow pre-releases for CUDA packages
+prerelease = "allow"
+# Use unsafe-best-match to check all indexes for best version
+index-strategy = "unsafe-best-match"
+
+[tool.uv.sources]
+# Git dependencies
+conch = { git = "https://github.com/Mahmoodlab/CONCH.git" }
+hest = { git = "https://github.com/mahmoodlab/HEST.git", rev = "2c777630b1e8a74db6b36ef05582de3bd52ccb61" }
+
+[tool.hatch.metadata]
+allow-direct-references = true

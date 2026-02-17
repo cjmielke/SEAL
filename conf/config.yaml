@@ -1,0 +1,162 @@
+encoder: 'conch' # Feature extractor encoder ['conch', 'uni', 'virchow2']
+model: 'panST' # one of ['bleep', 'stnet', 'pathomclip', 'panST', 'linprobe']
+workers: 20
+batch_size: 384
+
+num_patients_train: 600 # max patients
+
+reload_etl: False # re-calculates gene alignment etc
+reload_dataset: False
+subsample_frac: null
+augment: 'hard' # valid: [null, 'soft', 'hard']
+
+multi_mag: False # use multi-magnification training
+spot_context: True # use pooled spot context in gene encoder
+gene_criterion: hvg # one of ['hvg', 'heg']
+separate_val_split: False # separate validation split, otherwise combine train + val split
+organ_token: False
+find_unused_parameters: False
+
+
+num_patches_val: 20000
+num_patches_test: 40000 # max number of patches per organ
+n_train_genes: 2000
+n_test_genes: 10 # number of genes per organ for eval
+
+
+# PREPROCESSING
+gene_norm: log_norm # one of ['log ', 'log_norm', None]
+unify_gene_names: false
+
+seed: 42
+wandb: True
+
+# DATA SCOPE
+filter_dict: # train data only
+    st_technology:
+        - Visium
+        - Visium HD
+    species: 
+        - Homo sapiens
+    organ: 
+        - Breast
+        - Bowel
+        - Skin
+        - Kidney
+        - Heart
+        - Prostate
+        - Brain
+        - Lung
+        - Uterus
+        - Liver
+        - Bladder
+        - Pancreas
+        - Cervix
+        - Ovary
+
+
+epochs: 10
+gene_loss: barlow_std_mse # one of ['mse', 'pls', 'barlow', 'mmd', 'barlow_soft']
+contrast_method: clip # one of ['clip', 'soft_clip', 's2l', 'cca', 'barlow']
+lambda_contrast: 1.0 # contrastive loss across
+lambda_recon_gene: 1.0 # gene decoder reconstruction loss
+lambda_recon_img: 1.0 # direct image embedding reconstruction loss
+lambda_cca: 0.0
+lambda_da: 0.0
+l2_norm: True
+img_lr: 0.0001
+gene_lr: 0.0001
+
+layer_decay: 0.7 # only for fine-tuning without adapter
+opt: adamw
+weight_decay: 0.2
+scheduler: 'cosine'
+save_every: 5 # model checkpointing
+hest_every: 10 # HestBench eval 
+eval_every: 1 # in-domain patch-level eval
+rank_every: 1 # validation set eval
+warmup_val_every: 1
+warmup_test_every: 1
+pca_reduce: True # pca reduce before linear probe
+plot_every: 0 # plot latent embeddings (0 means no plots)
+plot_genes: 
+    - ESR1
+    - PGR
+    - ERBB2d
+
+
+# cross-model settings
+projection_head: 'none' # one of ['linear', 'mlp', 'none'] --> use projection on latent during training
+
+
+# image finetuning settings
+use_adapter: False # use adapter instead of fine-tuning original encoder
+slide_level_eval: True
+hest_eval: True
+hest_tasks: 
+    - xenium
+    - visium
+adapter_bottleneck: 256 # TODO - make a factor? 
+partial_blocks: 1
+partial_tune: true
+
+
+
+# gene encoder
+gene_model: vae # one of ['mlp', 'mae', 'scgpt', 'vae', 'null']
+kl_loss: False # use KL penalty in VAE
+mask_ratio: 0.0
+dec_batch_norm: False
+dec_dropout: 0.0
+vae_dropout: 0.0
+two_stage_training: False # freeze gene encoder after warmup
+scgpt_blocks: 3
+warmup_epochs: 0     # uses autoencoder when > 0
+warmup_noise: 0.0
+warmup_lr: 0.0005
+warmup_only: False # debug flag for ablation
+vae_norm_flow: True
+noise_method: random # one of ['random', 'gaussian']
+out_dim: 512 # old - will be overwritten in the pipeline
+hidden_dims: 
+    - 1024
+    - 512
+temperature: 0.05
+# temperature 0.1
+trainable_temperature: False
+grad_accum: 1
+
+# visual trace
+n_genes: 5 # top N most variable genes
+
+
+use_lora: True
+lora: 
+    r: 8
+    lora_alpha: 8
+    lora_dropout: 0.15
+    use_rslora: False
+    
+
+
+#############
+### EVAL Arguments (Hestbench)
+#############
+hestbench: # local hestbench data paths
+    bench_data_root: eval/bench_data
+    embed_data_root: eval/ST_data_emb 
+    weights_root: eval/fm_v1
+    method: ridge # one of ['xgboost', 'ridge']
+    num_workers: 20
+    normalize: True # log1p transform
+    count_norm: False # count norm (default in HEST is False)
+    dimreduce: PCA # one of [null, 'PCA']
+    cuml: True # use cuml PCA (faster)
+
+
+
+
+# OLD PARAMETERS
+cached_wsi: True # uses pre-extract features from dataloader (else raw images)
+prefetch: True # prefetches images or WSI features no matter what (memory intensive)
+
