@@ -67,3 +67,4 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel.force-include]
 "conf" = "seal/conf"
+"cache" = "seal/cache"
