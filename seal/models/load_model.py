@@ -31,7 +31,7 @@ from seal.models.gene_model import GeneMLP, SCGPTEncoder, unfreeze_scgpt, ModelD
 import torch.nn as nn
 from seal.models.da_model import AdversarialDiscriminator
 from seal.models.encoder_factory import encoder_factory
-
+from pathlib import Path
 
 HF_API_KEY = os.getenv("HF_API_KEY")
 
